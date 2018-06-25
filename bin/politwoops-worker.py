@@ -92,7 +92,7 @@ class DeletedTweetsWorker(object):
 
     def get_users(self):
         cursor = self.database.cursor()
-        q = "SELECT `twitter_id`, `user_name`, `id` FROM `politicians` where status IN (1,2)"
+        q = "SELECT `twitter_id`, `screen_name`, `epid` as id FROM `politicians` where status IN (1,2)"
         cursor.execute(q)
         ids = {}
         politicians = {}
@@ -215,7 +215,7 @@ class DeletedTweetsWorker(object):
         if current_user_name != tweet_user_name:
             self.politicians[tweet_user_id] = tweet_user_name
             cursor= self.database.cursor()
-            cursor.execute("""UPDATE `politicians` SET `user_name` = %s WHERE `id` = %s""", (tweet_user_name, self.users[tweet_user_id]))
+            cursor.execute("""UPDATE `politicians` SET `screen_name` = %s WHERE `twitter_id` = %s""", (tweet_user_name, self.users[tweet_user_id]))
 
 
     def send_alert(self, username, created, text):

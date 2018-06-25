@@ -1,0 +1,13 @@
+[Unit]
+Description=Politwoops twitter client, receive new tweets
+PartOf=politwoops.target
+
+[Service]
+User=xavier
+Group=xavier
+WorkingDirectory=/usr/src/politwoops
+Environment=PYTHONPATH=$PYTHONPATH:/usr/src/politwoops/lib
+ExecStart=/usr/bin/python  ./bin/tweets-client.py
+Restart=on-failure
+[Install]
+WantedBy=multi-user.target

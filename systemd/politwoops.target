@@ -1,0 +1,6 @@
+[Unit]
+Wants=politwoops-twitter.service politwoops-worker.service
+
+[Install]
+WantedBy=multi-user.target
+

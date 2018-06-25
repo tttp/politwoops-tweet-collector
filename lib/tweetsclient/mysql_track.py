@@ -55,6 +55,34 @@ class MySQLTrackPlugin(tweetsclient.TrackPlugin):
     def get_type(self):
         return self.config.get('tweets-client', 'type')
 
+    def get_missing_ids(self):
+        tbl = self.config.get('database', 'table')
+        #fld = self.config.get('database', 'field')
+        fld = 'screen_name'
+        cnd = self.config.get('database', 'conditions')
+        cnd = " twitter_id is null and screen_name !='' limit 100"
+        conn = self._get_database()
+        return self._query(conn, tbl, fld, cnd)
+
+    def update_user(self, user):
+#        user.id user.screen_name followers_count friends_count user.statuses_count user.entities.urls.expended_url profile_image_url_https lang created_at
+        tbl = self.config.get('database', 'table')
+        fld = self.config.get('database', 'field')
+        connection = self._get_database()
+        cursor = connection.cursor()
+        try:
+          #q = "UPDATE `%s` SET `%s`= %s,followers_count=%s,friends_count=%,url='%s',profile_image_url='%s',created_at='%' WHERE screen_name='%s'" % (tbl, fld,user.id,user.followers_count,user.friends_count,url,user.profile_image_url_https,user.created_at,user.screen_name)
+          q = "UPDATE `%s` SET `%s`=" % (tbl, fld)
+          q = q +''' %s , followers_count=%s,friends_count=%s, created_at="%s",description="%s",profile_image_url="%s" WHERE screen_name="%s" ''' #,user.id,user.followers_count,user.friends_count,user.created_at,user.description, user.profile_image_url,user.screen_name)
+          
+          log.debug("Executing query: {0}", q)
+          cursor.execute(q,(user.id,user.followers_count,user.friends_count,user.created_at,user.description, user.profile_image_url,user.screen_name))
+          connection.commit()
+        except:
+           log.error("can't execute query");
+           raise
+
+
     def get_items(self):
         stream_type = self.get_type()
         if stream_type == 'users':

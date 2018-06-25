@@ -1,0 +1,12 @@
+Unit]
+Description=Politwoops worker, push the tweets in the DB
+After=mysqld.target
+PartOf=politwoops.target
+
+[Service]
+User=xavier
+Group=xavier
+WorkingDirectory=/usr/src/politwoops
+Environment=PYTHONPATH=$PYTHONPATH:/usr/src/politwoops/lib
+ExecStart=/usr/bin/python ./bin/politwoops-worker.py
+Restart=on-failure
